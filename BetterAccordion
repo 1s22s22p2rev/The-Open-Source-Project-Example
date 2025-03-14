@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enhanced Image Accordion</title>
+  <style>
+    .accordion {
+      width: 80%;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .accordion-item {
+      border-bottom: 1px solid #ddd;
+    }
+    .accordion-header {
+      background: #f7f7f7;
+      cursor: pointer;
+      padding: 10px 15px;
+      font-size: 1.1em;
+      user-select: none;
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 15px;
+      transition: max-height 0.3s ease-out;
+    }
+    .accordion-content img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Accordion container with ARIA role -->
+  <div class="accordion" role="tablist">
+    <div class="accordion-item">
+      <!-- Header with role, tabindex and aria attributes -->
+      <div class="accordion-header" role="button" tabindex="0" aria-expanded="false" aria-controls="content-1" id="header-1">
+        Image 1
+      </div>
+      <!-- Content section with ARIA region -->
+      <div class="accordion-content" id="content-1" role="region" aria-labelledby="header-1">
+        <img src="https://via.placeholder.com/600x400?text=Image+1" alt="Image 1">
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header" role="button" tabindex="0" aria-expanded="false" aria-controls="content-2" id="header-2">
+        Image 2
+      </div>
+      <div class="accordion-content" id="content-2" role="region" aria-labelledby="header-2">
+        <img src="https://via.placeholder.com/600x400?text=Image+2" alt="Image 2">
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header" role="button" tabindex="0" aria-expanded="false" aria-controls="content-3" id="header-3">
+        Image 3
+      </div>
+      <div class="accordion-content" id="content-3" role="region" aria-labelledby="header-3">
+        <img src="https://via.placeholder.com/600x400?text=Image+3" alt="Image 3">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const headers = document.querySelectorAll(".accordion-header");
+
+      // Function to close all accordion items
+      function closeAll() {
+        headers.forEach(header => {
+          const content = document.getElementById(header.getAttribute("aria-controls"));
+          header.setAttribute("aria-expanded", "false");
+          content.style.maxHeight = null;
+        });
+      }
+
+      // Function to open a specific accordion item
+      function openAccordion(header) {
+        const content = document.getElementById(header.getAttribute("aria-controls"));
+        header.setAttribute("aria-expanded", "true");
+        // Set maxHeight to the scrollHeight for a smooth slide effect
+        content.style.maxHeight = content.scrollHeight + "px";
+      }
+
+      headers.forEach(header => {
+        header.addEventListener("click", function() {
+          const isExpanded = this.getAttribute("aria-expanded") === "true";
+          // Single-open: close all first
+          closeAll();
+          // Toggle the clicked header: open it if it was closed
+          if (!isExpanded) {
+            openAccordion(this);
+          }
+        });
+
+        // Enable keyboard interaction (Enter/Space)
+        header.addEventListener("keydown", function(e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            this.click();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
